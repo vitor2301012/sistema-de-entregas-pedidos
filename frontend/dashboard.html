@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Entregas - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #007bff;
+            transition: transform 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .stat-card.success {
+            border-left-color: #28a745;
+        }
+        
+        .stat-card.warning {
+            border-left-color: #ffc107;
+        }
+        
+        .stat-card.danger {
+            border-left-color: #dc3545;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .status-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-em_andamento {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-entregue {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-cancelado {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #007bff;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .estado-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .estado-item:last-child {
+            border-bottom: none;
+        }
+        
+        .estado-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .estado-count {
+            background: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #dc3545;
+            background: #f8d7da;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .refresh-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        
+        .refresh-btn:hover {
+            background: #0056b3;
+        }
+        
+        .navigation-links {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>📊 Dashboard - Sistema de Entregas</h1>
+            <p>Visão geral dos pedidos e estatísticas do sistema</p>
+        </div>
+        
+        <div id="loadingSection" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Carregando estatísticas...</p>
+        </div>
+        
+        <div id="errorSection" class="error-message" style="display: none;">
+            <h3>Erro ao carregar dados</h3>
+            <p id="errorMessage"></p>
+            <button class="refresh-btn" onclick="carregarEstatisticas()">Tentar Novamente</button>
+        </div>
+        
+        <div id="dashboardContent" style="display: none;">
+            <!-- Cards de Resumo -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalPedidos">0</div>
+                    <div class="stat-label">Total de Pedidos</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-number" id="pedidosEntregues">0</div>
+                    <div class="stat-label">Pedidos Entregues</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-number" id="pedidosAndamento">0</div>
+                    <div class="stat-label">Em Andamento</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-number" id="pedidosCancelados">0</div>
+                    <div class="stat-label">Cancelados</div>
+                </div>
+            </div>
+            
+            <!-- Gráficos e Listas -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">📈 Pedidos por Status</div>
+                    <ul class="status-list" id="statusList">
+                        <!-- Preenchido dinamicamente -->
+                    </ul>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-title">🗺️ Top Estados</div>
+                    <div id="estadosList">
+                        <!-- Preenchido dinamicamente -->
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-title">👥 Top Clientes</div>
+                    <div id="clientesList">
+                        <!-- Preenchido dinamicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation-links">
+            <a href="index.html" class="nav-link">➕ Cadastrar Cliente</a>
+            <a href="pedidos.html" class="nav-link">📦 Novo Pedido</a>
+            <a href="gerenciar-pedidos.html" class="nav-link">⚙️ Gerenciar Pedidos</a>
+        </div>
+    </div>
+    
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -7,6 +7,61 @@ router.get('/test', (req, res) => {
     res.json({ message: 'Rota de pedidos funcionando!' });
 });
 
+// Rota para buscar estatísticas dos pedidos
+router.get('/estatisticas', async (req, res) => {
+    console.log('Rota de estatísticas chamada!');
+    try {
+        // Versão simplificada para teste
+        const estatisticas = {
+            resumo: {
+                totalPedidos: 0,
+                porStatus: [],
+                porEstado: [],
+                topClientes: []
+            },
+            graficos: {
+                pedidosRecentes: [],
+                statusDistribuicao: [],
+                estadosDistribuicao: []
+            }
+        };
+
+        // Tentar buscar total de pedidos
+        try {
+            console.log('Tentando buscar total de pedidos...');
+            const [totalResult] = await connection.execute('SELECT COUNT(*) as total FROM pedidos');
+            estatisticas.resumo.totalPedidos = totalResult[0].total;
+            console.log('Total de pedidos encontrado:', estatisticas.resumo.totalPedidos);
+        } catch (error) {
+            console.error('Erro ao buscar total:', error.message);
+        }
+
+        // Tentar buscar pedidos por status
+        try {
+            console.log('Tentando buscar pedidos por status...');
+            const [statusResult] = await connection.execute(`
+                SELECT status, COUNT(*) as quantidade 
+                FROM pedidos 
+                GROUP BY status
+            `);
+            estatisticas.resumo.porStatus = statusResult;
+            estatisticas.graficos.statusDistribuicao = statusResult;
+            console.log('Status encontrados:', statusResult.length);
+        } catch (error) {
+            console.error('Erro ao buscar status:', error.message);
+        }
+
+        console.log('Enviando resposta...');
+        res.json(estatisticas);
+    } catch (error) {
+        console.error('Erro geral ao buscar estatísticas:', error.message);
+        res.status(500).json({ 
+            error: 'Erro interno do servidor',
+            details: error.message 
+        });
+    }
+});
+
 // Rota para cadastrar um novo pedido
 router.post('/', async (req, res) => {
     try {
