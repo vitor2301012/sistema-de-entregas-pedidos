@@ -2,6 +2,19 @@ const express = require('express');
 const router = express.Router();
 const connection = require('../db/conexao');
 
+// Rota para listar todos os clientes
+router.get('/', async (req, res) => {
+    try {
+        const [rows] = await connection.execute('SELECT * FROM clientes');
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Erro ao listar clientes:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
 // Rota para cadastrar um novo cliente
 router.post('/', async (req, res) => {
     try {
