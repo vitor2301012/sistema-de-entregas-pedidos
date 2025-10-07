@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const clientesRoutes = require('./routes/clientes');
 const pedidosRoutes = require('./routes/pedidos');
 
@@ -14,7 +15,10 @@ app.use(cors({
 
 app.use(express.json());
 
-// Rotas
+// Servir arquivos estáticos do frontend
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Rotas da API
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/pedidos', pedidosRoutes);
 
