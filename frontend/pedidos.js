@@ -40,16 +40,16 @@ document.addEventListener('DOMContentLoaded', carregarClientes);
 document.getElementById('pedidoForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Formatando o endereço completo a partir dos campos separados
-    const estado = document.getElementById('estado').value;
-    const estadoNome = document.getElementById('estado').options[document.getElementById('estado').selectedIndex].text;
-    const endereco_entrega = `${document.getElementById('rua').value}, ${document.getElementById('numero').value}${document.getElementById('complemento').value ? ' - ' + document.getElementById('complemento').value : ''} - ${estadoNome} - CEP: ${document.getElementById('cep').value}`;
-
     const formData = {
         cliente_id: document.getElementById('cliente').value,
         descricao: document.getElementById('descricao').value,
-        endereco_entrega: endereco_entrega,
-        estado: estado
+        rua: document.getElementById('rua').value,
+        numero: document.getElementById('numero').value,
+        complemento: document.getElementById('complemento').value,
+        bairro: document.getElementById('bairro').value,
+        cidade: document.getElementById('cidade').value,
+        estado: document.getElementById('estado').value,
+        cep: document.getElementById('cep').value
     };
 
     try {

@@ -7,6 +7,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="home.html">Sistema de Entregas</a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="home.html" class="nav-link">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Clientes</a>
+                </li>
+                <li class="nav-item">
+                    <a href="pedidos.html" class="nav-link active">Pedidos</a>
+                </li>
+                <li class="nav-item">
+                    <a href="gerenciar-pedidos.html" class="nav-link">Gerenciar</a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="container">
         <h1>Cadastro de Pedidos</h1>
         <form id="pedidoForm">
@@ -35,6 +60,16 @@
             <div class="form-group">
                 <label for="complemento">Complemento:</label>
                 <input type="text" id="complemento" name="complemento">
+            </div>
+
+            <div class="form-group">
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="bairro" name="bairro" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cidade">Cidade:</label>
+                <input type="text" id="cidade" name="cidade" required>
             </div>
 
             <div class="form-group">

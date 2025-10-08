@@ -5,7 +5,13 @@ document.getElementById('clienteForm').addEventListener('submit', async (e) => {
         nome: document.getElementById('nome').value,
         email: document.getElementById('email').value,
         telefone: document.getElementById('telefone').value,
-        endereco: document.getElementById('endereco').value
+        rua: document.getElementById('rua').value,
+        numero: document.getElementById('numero').value,
+        complemento: document.getElementById('complemento').value,
+        bairro: document.getElementById('bairro').value,
+        cidade: document.getElementById('cidade').value,
+        estado: document.getElementById('estado').value,
+        cep: document.getElementById('cep').value
     };
 
     try {

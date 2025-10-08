@@ -65,42 +65,73 @@ router.get('/estatisticas', async (req, res) => {
 // Rota para cadastrar um novo pedido
 router.post('/', async (req, res) => {
     try {
-        const { cliente_id, descricao, endereco_entrega, estado } = req.body;
+        const { cliente_id, descricao, rua, numero, complemento, bairro, cidade, estado, cep } = req.body;
         
         // Validação básica
-        if (!cliente_id || !descricao || !endereco_entrega) {
-            return res.status(400).json({ error: 'Cliente, descrição e endereço são obrigatórios' });
+        if (!cliente_id || !descricao) {
+            return res.status(400).json({ error: 'Cliente e descrição são obrigatórios' });
         }
 
-        let query, values;
-        
-        if (estado) {
-            // Se tem estado, tenta inserir com estado
-            query = `
-                INSERT INTO pedidos (cliente_id, descricao, endereco_entrega, estado)
-                VALUES (?, ?, ?, ?)
-            `;
-            values = [cliente_id, descricao, endereco_entrega, estado];
-        } else {
-            // Se não tem estado, insere sem estado
-            query = `
-                INSERT INTO pedidos (cliente_id, descricao, endereco_entrega)
-                VALUES (?, ?, ?)
-            `;
-            values = [cliente_id, descricao, endereco_entrega];
+        // Construir endereço completo se os campos individuais estão presentes
+        let endereco_entrega = '';
+        if (rua || numero || complemento || bairro || cidade || estado || cep) {
+            endereco_entrega = `${rua || ''}, ${numero || ''} ${complemento ? '- ' + complemento : ''}, ${bairro || ''}, ${cidade || ''} - ${estado || ''}, CEP: ${cep || ''}`.trim();
         }
 
-        const [result] = await connection.execute(query, values);
+        try {
+            // Tentar inserir com todos os campos novos
+            const query = `
+                INSERT INTO pedidos (cliente_id, descricao, endereco_entrega, rua, numero, complemento, bairro, cidade, estado, cep)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+            const values = [cliente_id, descricao, endereco_entrega, rua, numero, complemento, bairro, cidade, estado, cep];
+            const [result] = await connection.execute(query, values);
 
-        res.status(201).json({
-            id: result.insertId,
-            cliente_id,
-            descricao,
-            endereco_entrega,
-            estado: estado || null,
-            status: 'em_andamento',
-            data_criacao: new Date()
-        });
+            res.status(201).json({
+                id: result.insertId,
+                cliente_id,
+                descricao,
+                endereco_entrega,
+                rua,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado,
+                cep,
+                status: 'em_andamento',
+                data_criacao: new Date()
+            });
+        } catch (dbError) {
+            // Se der erro, pode ser que as colunas não existam ainda
+            console.warn('Tentando inserir com campos originais apenas:', dbError.message);
+            
+            let query, values;
+            if (estado) {
+                query = `
+                    INSERT INTO pedidos (cliente_id, descricao, endereco_entrega, estado)
+                    VALUES (?, ?, ?, ?)
+                `;
+                values = [cliente_id, descricao, endereco_entrega, estado];
+            } else {
+                query = `
+                    INSERT INTO pedidos (cliente_id, descricao, endereco_entrega)
+                    VALUES (?, ?, ?)
+                `;
+                values = [cliente_id, descricao, endereco_entrega];
+            }
+
+            const [result] = await connection.execute(query, values);
+            res.status(201).json({
+                id: result.insertId,
+                cliente_id,
+                descricao,
+                endereco_entrega,
+                estado: estado || null,
+                status: 'em_andamento',
+                data_criacao: new Date()
+            });
+        }
     } catch (error) {
         console.error('Erro ao cadastrar pedido:', error);
         res.status(500).json({ error: 'Erro interno do servidor' });

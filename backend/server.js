@@ -22,6 +22,11 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/pedidos', pedidosRoutes);
 
+// Rota raiz - redirecionar para a página inicial
+app.get('/', (req, res) => {
+    res.redirect('/home.html');
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
